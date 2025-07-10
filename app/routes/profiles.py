@@ -32,9 +32,33 @@ def get_user_profile(user_id: int, db: Session = Depends(get_db)):
     }
 
 
-@router.get("/items/{item_id}", summary="Get Item Profile")
+
+
+@router.get("/profiles/users/{user_id}")
+def get_user_profile(user_id: int, db: Session = Depends(get_db)):
+    users = db.query(User).all()
+    print("✅ Users in DB:", users)
+
+    print("🔍 Looking for user_id:", user_id)
+    user = db.query(User).filter(User.id == user_id).first()
+    print("🧾 User found:", user)
+
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user
+
+
+@router.get("/profiles/items/{item_id}")
 def get_item_profile(item_id: int, db: Session = Depends(get_db)):
+    items = db.query(Item).all()
+    print("✅ Items in DB:", items)
+
+    print("🔍 Looking for item_id:", item_id)
     item = db.query(Item).filter(Item.id == item_id).first()
+    print("🧾 Item found:", item)
+
     if not item:
         raise HTTPException(status_code=404, detail="Item not found")
-    return {"id": item.id, "name": item.name}
+    return item
+
+
